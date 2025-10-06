@@ -2,7 +2,7 @@
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/BlizTBr/scripts/main/Rayfield.lua"))()
 
 local Window = Rayfield:CreateWindow({
-	Name = "俺物人 Studio版",
+	Name = "俺物人 Executor版",
 	LoadingTitle = "読み込み中...",
 	KeySystem = false
 })
@@ -11,22 +11,22 @@ local Window = Rayfield:CreateWindow({
 -- タブ1：俺物人基本操作
 -- =========================
 local Tab1 = Window:CreateTab("俺物人操作")
-local Section1 = Tab1:CreateSection("移動・ジャンプ")
+local Section1 = Tab1:CreateSection("移動・ジャンプ・即反応")
 
--- 飛ぶボタン
+-- Executor即反応飛ぶ
 Section1:CreateButton({
 	Name = "飛ぶ",
 	Callback = function()
-		local player = game.Players.LocalPlayer
-		local char = player.Character or player.CharacterAdded:Wait()
+		local plr = game.Players.LocalPlayer
+		local char = plr.Character or plr.CharacterAdded:Wait()
 		local hrp = char:WaitForChild("HumanoidRootPart")
 
-		-- BodyVelocityで即座に上方向に飛ばす
+		-- BodyVelocityで即座に飛ばす
 		local bv = Instance.new("BodyVelocity")
-		bv.Velocity = Vector3.new(0, 100, 0)
+		bv.Velocity = Vector3.new(0, 150, 0)
 		bv.MaxForce = Vector3.new(0, math.huge, 0)
 		bv.Parent = hrp
-		game:GetService("Debris"):AddItem(bv, 0.3)
+		game:GetService("Debris"):AddItem(bv, 0.2)
 	end
 })
 
@@ -37,10 +37,8 @@ Section1:CreateSlider({
 	Increment = 1,
 	Suffix = "studs/s",
 	CurrentValue = 16,
-	Flag = "SpeedSlider",
 	Callback = function(value)
-		local player = game.Players.LocalPlayer
-		local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+		local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid then
 			humanoid.WalkSpeed = value
 		end
@@ -54,7 +52,6 @@ Section1:CreateSlider({
 	Increment = 5,
 	Suffix = "",
 	CurrentValue = 50,
-	Flag = "JumpSlider",
 	Callback = function(value)
 		local humanoid = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
 		if humanoid then
@@ -64,17 +61,17 @@ Section1:CreateSlider({
 })
 
 -- =========================
--- タブ2：特殊操作
+-- タブ2：特殊操作（ステッキ・フリング）
 -- =========================
 local Tab2 = Window:CreateTab("特殊操作")
-local Section2 = Tab2:CreateSection("ステッキ・フリング")
+local Section2 = Tab2:CreateSection("ステッキ操作＋FTAP")
 
 -- 光るステッキ
 Section2:CreateButton({
 	Name = "光るステッキ",
 	Callback = function()
-		local player = game.Players.LocalPlayer
-		local char = player.Character or player.CharacterAdded:Wait()
+		local plr = game.Players.LocalPlayer
+		local char = plr.Character or plr.CharacterAdded:Wait()
 		local hrp = char:WaitForChild("HumanoidRootPart")
 
 		local part = Instance.new("Part")
@@ -98,29 +95,27 @@ Section2:CreateButton({
 })
 
 -- =========================
--- タブ3：物理押す・ぶん投げ
+-- タブ3：フリング・押す系
 -- =========================
 local Tab3 = Window:CreateTab("俺物人フリング")
-local Section3 = Tab3:CreateSection("フリング系")
+local Section3 = Tab3:CreateSection("Executor即反応フリング")
 
--- 例：近くの物体を前方向に押す
+-- 近くの物体を前方に押す
 Section3:CreateButton({
 	Name = "前方に押す",
 	Callback = function()
-		local player = game.Players.LocalPlayer
-		local char = player.Character or player.CharacterAdded:Wait()
+		local plr = game.Players.LocalPlayer
+		local char = plr.Character or plr.CharacterAdded:Wait()
 		local hrp = char:WaitForChild("HumanoidRootPart")
 
 		for _, obj in pairs(workspace:GetDescendants()) do
 			if obj:IsA("BasePart") and (obj.Position - hrp.Position).Magnitude < 15 then
 				local bv = Instance.new("BodyVelocity")
-				bv.Velocity = hrp.CFrame.LookVector * 100
+				bv.Velocity = hrp.CFrame.LookVector * 200
 				bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
 				bv.Parent = obj
-				game:GetService("Debris"):AddItem(bv, 0.5)
+				game:GetService("Debris"):AddItem(bv, 0.3)
 			end
 		end
 	end
 })
-
--- Executor版っぽい即反応を意識してRenderSteppedで更新も可能
