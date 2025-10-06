@@ -63,7 +63,7 @@ Section1:CreateSlider({
 -- タブ2：特殊操作（ステッキ・フリング）
 -- =========================
 local Tab2 = Window:CreateTab("特殊操作")
-local Section2 = Tab2:CreateSection("ステッキ操作＋FTAP")
+local Section2 = Tab2:CreateSection("ステッキ操作")
 
 -- 光るステッキ
 Section2:CreateButton({
@@ -82,19 +82,6 @@ Section2:CreateButton({
 		part.CFrame = hrp.CFrame * CFrame.new(0, 2, 0)
 		part.Parent = workspace
 		game:GetService("Debris"):AddItem(part, 2)
-	end
-})
-
--- Blitz FTAP統合（Executor専用）
-Section2:CreateButton({
-	Name = "フリング起動",
-	Callback = function()
-		local success, err = pcall(function()
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/BlizTBr/scripts/main/FTAP.lua"))()
-		end)
-		if not success then
-			warn("FTAPのロードに失敗:", err)
-		end
 	end
 })
 
@@ -118,6 +105,27 @@ Section3:CreateButton({
 				bv.Velocity = hrp.CFrame.LookVector * 200
 				bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
 				bv.Parent = obj
+				game:GetService("Debris"):AddItem(bv, 0.3)
+			end
+		end
+	end
+})
+
+-- 遠距離フリング例（プレイヤーにも対応可能）
+Section3:CreateButton({
+	Name = "周囲プレイヤーをフリング",
+	Callback = function()
+		local plr = game.Players.LocalPlayer
+		local char = plr.Character or plr.CharacterAdded:Wait()
+		local hrp = char:WaitForChild("HumanoidRootPart")
+
+		for _, target in pairs(game.Players:GetPlayers()) do
+			if target ~= plr and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+				local part = target.Character.HumanoidRootPart
+				local bv = Instance.new("BodyVelocity")
+				bv.Velocity = (part.Position - hrp.Position).unit * 150 + Vector3.new(0,100,0)
+				bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+				bv.Parent = part
 				game:GetService("Debris"):AddItem(bv, 0.3)
 			end
 		end
