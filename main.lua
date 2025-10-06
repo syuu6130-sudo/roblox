@@ -1,30 +1,38 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/.../Rayfield.lua"))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "My Custom UI",
-   LoadingTitle = "Loading...",
-   LoadingSubtitle = "by しゅう",
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = "MyScript",
-      FileName = "Config"
-   },
-   Discord = {
-      Enabled = false,
-   },
-   KeySystem = false
+	Name = "物人 データ版",
+	LoadingTitle = "読み込み中...",
+	ConfigurationSaving = {
+		Enabled = true,
+		FolderName = nil,
+		FileName = "OreMonoConfig"
+	},
+	KeySystem = false,
 })
 
-local Tab = Window:CreateTab("Main", 4483362458)
+-- ボタンの例
+local Tab = Window:CreateTab("操作")
+local Section = Tab:CreateSection("動作")
 
-Tab:CreateButton({
-   Name = "Click Me",
-   Callback = function()
-      Rayfield:Notify({
-         Title = "反応しました！",
-         Content = "このボタンはちゃんと動作してます！",
-         Duration = 4,
-         Image = 4483362458
-      })
-   end,
+Section:CreateButton({
+	Name = "飛ぶ",
+	Callback = function()
+		print("飛ぶボタン押した")
+		-- ここにExecutor版の飛ぶ処理を入れる
+	end
+})
+
+Section:CreateSlider({
+	Name = "移動速度",
+	Range = {16, 200},
+	Increment = 1,
+	Suffix = "studs/s",
+	CurrentValue = 16,
+	Flag = "SpeedSlider",
+	Callback = function(value)
+		print("速度変更:", value)
+		-- プレイヤーの移動速度を変更
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+	end
 })
