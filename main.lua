@@ -13,7 +13,7 @@ local Window = Rayfield:CreateWindow({
 local Tab1 = Window:CreateTab("俺物人操作")
 local Section1 = Tab1:CreateSection("移動・ジャンプ・即反応")
 
--- Executor即反応飛ぶ
+-- Executor即反応 飛ぶ
 Section1:CreateButton({
 	Name = "飛ぶ",
 	Callback = function()
@@ -21,7 +21,6 @@ Section1:CreateButton({
 		local char = plr.Character or plr.CharacterAdded:Wait()
 		local hrp = char:WaitForChild("HumanoidRootPart")
 
-		-- BodyVelocityで即座に飛ばす
 		local bv = Instance.new("BodyVelocity")
 		bv.Velocity = Vector3.new(0, 150, 0)
 		bv.MaxForce = Vector3.new(0, math.huge, 0)
@@ -86,11 +85,16 @@ Section2:CreateButton({
 	end
 })
 
--- Blitz FTAP統合
+-- Blitz FTAP統合（Executor専用）
 Section2:CreateButton({
 	Name = "フリング起動",
 	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/BlizTBr/scripts/main/FTAP.lua"))()
+		local success, err = pcall(function()
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/BlizTBr/scripts/main/FTAP.lua"))()
+		end)
+		if not success then
+			warn("FTAPのロードに失敗:", err)
+		end
 	end
 })
 
